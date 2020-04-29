@@ -1,3 +1,10 @@
+## created during building and running
+bin
+src/obj
+*.root
+*.png
+*.pdf
+
 # Prerequisites
 *.d
 
