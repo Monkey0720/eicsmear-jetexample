@@ -70,6 +70,5 @@ clean :
 	rm -rvf $(BDIR)/*dSYM
 	rm -rvf lib/*dSYM	
 	rm -vf $(BDIR)/*
-	rm -vf lib/*
 
 .PHONY : clean
