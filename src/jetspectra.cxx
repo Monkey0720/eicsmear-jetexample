@@ -91,18 +91,19 @@ int main(int argc, char* argv[]){
 
   // Some cuts
   // ---------
-  double xmin = 1e-4;
+  double xmin = 1e-5;
   double xmax = 0.99;
-  double ymin = 1e-4;
+  double ymin = 0.01;
   double ymax = 0.95;
   double Q2min = 1;
   double Q2max = 1000000;
 
   // Afterburners etc.
   // -----------------
-  // Here, we demonstrate a toy pT acceptance
-  // (which technically should also act on pT_truth)
+  // Here, we demonstrate a toy pT acceptance / efficiency combination
+  // PURELY a toy, NO connection to reality
   TF1* eff = new TF1("eff","(x>[2]) * [0]*TMath::Erf(x-[1])",0, 3);
+
   // mostly 99%, dropping toward small pT, sharp cutoff at 0.2
   eff->SetParameters (0.99,-0.8, 0.2);
   
@@ -204,15 +205,12 @@ int main(int argc, char* argv[]){
       }
 
       // the following logic should be safe. a particle should be treated
-      // by exactly one of the of cases. Make double-sure that's true.
-      bool considered = false; 
+      // by exactly one of the of cases.
       
       // Nothing measured:
       if ( fabs(P) <= epsilon && fabs(E) <= epsilon ){
 	// This can happen when e.g. a low-p particle gets smeared below 0
 	// Should be rare but should count as if inParticleS==0 in the first place
-	if ( considered ) { cerr << "This should not happen" << endl; return -1;}
-	considered=true;
 	continue;
       }
 
@@ -225,8 +223,8 @@ int main(int argc, char* argv[]){
 	// whether for some phase space discarding one measurement may make sense
 	// because the other one has a better resolution.
 	// In this example, we use both.
-	if ( considered ) { cerr << "This should not happen" << endl; return -1;}
-	considered=true;
+
+	/* nothing to do */
       }
 
       // Tracker only
@@ -239,8 +237,6 @@ int main(int argc, char* argv[]){
 	// However, to keep this example free of truth information, we instead
 	// assume it's hadronic (because an EIC detector w/o EMCal coverage is silly).
 	// Typical assumptions are m=0 or m=m_pi. The latter is more realistic, so do that
-	if ( considered ) { cerr << "This should not happen" << endl; return -1;}
-	considered=true;
 
 	double m =  0.13957;  // GeV
 	E = std::sqrt(P*P + m*m);	
@@ -258,8 +254,6 @@ int main(int argc, char* argv[]){
 	// any HCAL hit without a pointing track is impossible to treat together with charged constituents.
 	// BUT note that any direct-photon analysis is killed. See the extended example instead
 
-	if ( considered ) { cerr << "This should not happen" << endl; return -1;}
-	considered=true;
 	continue;
       }
 
