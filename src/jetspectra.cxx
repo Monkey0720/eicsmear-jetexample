@@ -15,7 +15,6 @@
 #include <TChain.h>
 #include <TH1.h>
 #include <TH2.h>
-#include <TRandom.h>
 #include <TCanvas.h>
 #include <TLegend.h>
 #include <TText.h>
@@ -148,6 +147,7 @@ int main(int argc, char* argv[]){
     // event-wise cuts
     // ---------------
     bool smearacceptev=true;
+
     // For the high-Q^2 example, the double angle method does pretty well
     auto xS = inEventS->GetXDoubleAngle();
     auto yS = inEventS->GetYDoubleAngle();
@@ -223,7 +223,8 @@ int main(int argc, char* argv[]){
 	
 	// Here an analyzer would have to use their judgement and decide
 	// whether for some phase space discarding one measurement may make sense
-	// In this example, we are happy to know both use both
+	// because the other one has a better resolution.
+	// In this example, we use both.
 	if ( considered ) { cerr << "This should not happen" << endl; return -1;}
 	considered=true;
       }
@@ -247,7 +248,7 @@ int main(int argc, char* argv[]){
 
       // Calo only
       if ( fabs(P) <= epsilon && fabs(E) > epsilon ){
-	// - species (neutron, photon) that's covered only by calorimetry
+	// - neutral species (neutron, photon) that's covered only by calorimetry
 	// - region that's only covered by calorimetry (_should_ imply EMCAL in a sane detector)
 	// - missed track (or failed match)
 	// This is the most difficult case and definitely more realistically treated by
@@ -292,9 +293,9 @@ int main(int argc, char* argv[]){
     for ( auto j : smearjets ){
       smearedpt->Fill ( j.pt() );
     }
-
     
   }
+
   new TCanvas;
   gPad->SetLogy();
   smearedpt->Draw();
@@ -304,171 +305,3 @@ int main(int argc, char* argv[]){
   
   return 0;
 }
-
-// ---------------------------------------------------------------
-// void PlotQA ( const qaparameters& qapars, eventqacollection& eventqa, map<int,pidqacollection>& qabook ){
-
-//   // Stat  position and size
-//   // -----------------------
-//   gStyle->SetStatX(0.25);
-//   gStyle->SetStatW(0.15);
-//   gStyle->SetStatY(0.9);
-//   gStyle->SetStatH(0.15);
-
-//   // Position of the "Missed: " box
-//   float missx = 0.55;
-//   float missy = 0.2;
-//   float missy2 = 0.8;
-//   TText t;
-//   t.SetNDC();
-
-//   // prep a pdf collection
-//   new TCanvas;
-//   gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf[" );
-
-//   // event-wise qa
-
-//   // response-style
-//   // NM
-//   if ( eventqa.y_NM ) {
-//     eventqa.y_NM->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedy_NM, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.x_NM ) {
-//     eventqa.x_NM->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedx_NM, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.Q2_NM ) {
-//     eventqa.Q2_NM->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedQ2_NM, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   // DA
-//   if ( eventqa.y_DA ) {
-//     eventqa.y_DA->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedy_DA, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.x_DA ) {
-//     eventqa.x_DA->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedx_DA, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.Q2_DA ) {
-//     eventqa.Q2_DA->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedQ2_DA, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   // JB
-//   if ( eventqa.y_JB ) {
-//     eventqa.y_JB->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedy_JB, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.x_JB ) {
-//     eventqa.x_JB->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedx_JB, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.Q2_JB ) {
-//     eventqa.Q2_JB->Draw("colz");
-//     t.DrawText( missx,missy, Form("Missed: %ld / %ld",eventqa.missedQ2_JB, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-
-//   // resolution-style
-//   // NM
-//   if ( eventqa.dely_NM ) {
-//     eventqa.dely_NM->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedy_NM, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.delx_NM ) {
-//     eventqa.delx_NM->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedx_NM, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.delQ2_NM ) {
-//     eventqa.delQ2_NM->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedQ2_NM, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   // DA
-//   if ( eventqa.dely_DA ) {
-//     eventqa.dely_DA->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedy_DA, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.delx_DA ) {
-//     eventqa.delx_DA->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedx_DA, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.delQ2_DA ) {
-//     eventqa.delQ2_DA->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedQ2_DA, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   // JB
-//   if ( eventqa.dely_JB ) {
-//     eventqa.dely_JB->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedy_JB, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.delx_JB ) {
-//     eventqa.delx_JB->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedx_JB, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   if ( eventqa.delQ2_JB ) {
-//     eventqa.delQ2_JB->Draw("colz");
-//     t.DrawText( missx,missy2, Form("Missed: %ld / %ld",eventqa.missedQ2_JB, qapars.usedevents));
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-
-  
-
-//   // particle QA
-//   // -----------
-//   gStyle->SetStatX(0.55); // reposition stat box
-//   for ( auto& pidcoll : qabook ){
-//     auto& pid = pidcoll.first;
-//     auto& coll = pidcoll.second;
-
-//     // option "s" in Profile shows rms
-    
-//     coll.DelP_th->Draw("colz");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-
-//     coll.DelP_eta->Draw("colz");
-//     coll.DelP_eta->ProfileX("_px",1,-1,"s")->Draw("same");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-
-//     coll.DelE_th->Draw("colz");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-    
-//     coll.DelE_eta->Draw("colz");
-//     coll.DelE_eta->ProfileX("_px",1,-1,"s")->Draw("same");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-
-//     coll.DelE_E->Draw("colz");
-//     coll.DelE_E->ProfileX("_px",1,-1,"s")->Draw("same");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-
-//     coll.dTh_p->Draw("colz");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-    
-//     coll.dEta_p->Draw("colz");
-//     coll.dEta_p->ProfileX("_px",1,-1,"s")->Draw("same");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-
-//     coll.dPhi_p->Draw("colz");
-//     coll.dPhi_p->ProfileX("_px",1,-1,"s")->Draw("same");
-//     gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf" );
-//   }
-//   // close the pdf collection
-//   gPad->SaveAs( qapars.outfilebase + qapars.detstring + ".pdf]" );
-// }
-// // ---------------------------------------------------------------

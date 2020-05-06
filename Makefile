@@ -20,11 +20,17 @@ LIBPATH       = $(ROOTLIBS) -L$(FASTJETDIR)/lib -L$(BASEDIR)/tmpsmear/lib
 LIBS          = -leicsmear
 LIBS         += -lfastjet
 
-#-lfastjettools -lRecursiveTools
+# clunky way to see if we can turn on grooming
+GROOMING = $(if $(wildcard $(FASTJETDIR)/lib/libRecursiveTools.*),1)
+ifeq ($(GROOMING),1)
+	CXXFLAGS     += -DGROOMING
+	LIBS         += -lfastjettools -lRecursiveTools
+endif
+
+
 
 # includes
 INCS          = 
-#INCS          = $(SDIR)/jetspectra.hh
 
 ############################ locations ################################
 SDIR          = src
@@ -51,12 +57,15 @@ $(BDIR)/%  : $(ODIR)/%.o
 ###############################################################################
 ############################# Main Targets ####################################
 ###############################################################################
-all    : $(BDIR)/jetspectra
+all    : $(BDIR)/jetspectra $(BDIR)/extendedjetexample
 
 $(ODIR)/jetspectra.o 	: $(SDIR)/jetspectra.cxx $(INCS)
 
+$(ODIR)/extendedjetexample.o 	: $(SDIR)/extendedjetexample.cxx $(INCS)
+
 # bin
 $(BDIR)/jetspectra	: $(ODIR)/jetspectra.o
+$(BDIR)/extendedjetexample	: $(ODIR)/extendedjetexample.o
 
 ###############################################################################
 ##################################### MISC ####################################
