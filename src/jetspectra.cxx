@@ -102,7 +102,7 @@ int main(int argc, char* argv[]){
   // -----------------
   // Here, we demonstrate a toy pT acceptance / efficiency combination
   // PURELY a toy, NO connection to reality
-  TF1* eff = new TF1("eff","(x>[2]) * [0]*TMath::Erf(x-[1])",0, 3);
+  TF1* eff = new TF1("eff","(x>[2]) * [0]*TMath::Erf(x-[1])",0, 100);
 
   // mostly 99%, dropping toward small pT, sharp cutoff at 0.2
   eff->SetParameters (0.99,-0.8, 0.2);
@@ -199,7 +199,6 @@ int main(int argc, char* argv[]){
 	auto ran = gRandom->Uniform (0,1);
 	auto pt = std::sqrt ( px*px + py*py );  // GetPt() may be better or worse - for now the same
 	if ( ran > eff->Eval ( pt ) ) {
-	  // if ( pt > 0.9 ) cout << inParticleS->GetPt () << "  " << pt << "  rejected by efficiency, ran = " << ran << " eff = " << eff->Eval ( pt ) << endl;
 	  P=px=py=pz=0;
 	}
       }

@@ -119,7 +119,7 @@ int main(int argc, char* argv[]){
   // -----------------
   // Here, we demonstrate a toy pT acceptance / efficiency combination
   // PURELY a toy, NO connection to reality
-  TF1* eff = new TF1("eff","(x>[2]) * [0]*TMath::Erf(x-[1])",0, 3);
+  TF1* eff = new TF1("eff","(x>[2]) * [0]*TMath::Erf(x-[1])",0, 100);
 
   // mostly 99%, dropping toward small pT, sharp cutoff at 0.2
   eff->SetParameters (0.99,-0.8, 0.2);
@@ -310,7 +310,7 @@ int main(int argc, char* argv[]){
 	  // it indicates a region not covered by calorimetry.
 
 	  // We tap into the truth level information to make up for a framework short-coming:
-	  // A real analyser knows whether the calo information is EM or hadronic, but the
+	  // A real analyser knows whether the (missing!) calo information should be EM or hadronic, but the
 	  // ParticleMCS class has lost that information
 	  auto abspid=std::abs(inParticle->GetPdgCode());
 	  bool IsElectroMagnetic = ( abspid==22 || abspid == 11);	  
