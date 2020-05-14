@@ -180,7 +180,7 @@ int main(int argc, char* argv[]){
   vector<PseudoJet> TruthConstituents;
   vector<PseudoJet> SmearedConstituents;
   if ( nevents < 0 )  nevents = inTree->GetEntries();
-
+  
   for(long iEvent=0; iEvent<nevents; iEvent++){
     
     //Read next Event
@@ -233,7 +233,7 @@ int main(int argc, char* argv[]){
     TruthConstituents.clear();
     SmearedConstituents.clear();
 
-    for(int j=0; j<inEventS->GetNTracks(); j++){
+    for(unsigned int j=0; j<inEventS->GetNTracks(); j++){
       // first three particles are always beam and the virtual photon. skip.
       if ( j<3) continue;
 
