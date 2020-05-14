@@ -169,6 +169,7 @@ int main(int argc, char* argv[]){
   // One can run purely on the smeared tree as well without access to the truth.
 
   // Book-keping
+  long rejectevent=0;
   long keptevent=0;
   long lostevent=0;
   long fakeevent=0;
@@ -178,8 +179,9 @@ int main(int argc, char* argv[]){
   // -------------------------------
   vector<PseudoJet> TruthConstituents;
   vector<PseudoJet> SmearedConstituents;
+  if ( nevents < 0 )  nevents = inTree->GetEntries();
 
-  for(long iEvent=0; iEvent<inTree->GetEntries(); iEvent++){
+  for(long iEvent=0; iEvent<nevents; iEvent++){
     
     //Read next Event
     if(inTree->GetEntry(iEvent) <=0) break;
@@ -207,6 +209,8 @@ int main(int argc, char* argv[]){
     if ( yS < ymin   || yS > ymax ) smearacceptev = false;
     if ( Q2S < Q2min || Q2S > Q2max ) smearacceptev = false;
 
+    if ( !truthacceptev ) rejectevent++;
+     
     if ( !truthacceptev && !smearacceptev ) continue;
 
     // ----------------
@@ -299,6 +303,9 @@ int main(int argc, char* argv[]){
 	  // whether for some phase space discarding one measurement may make sense
 	  // because the other one has a better resolution.
 	  // In this example, we use both.
+
+	  // Note: In this case, P and E are smeared independently, so in general
+	  // the mass-energy relation is not conserved. FastJet does not mind at all.
 
 	  /* nothing to do */
 	}
@@ -457,6 +464,13 @@ int main(int argc, char* argv[]){
     }
 
   }
+
+  cout << " Done." << endl;
+  cout << "Processed " << nevents << " events. Of these, " << endl;
+  cout << " ---  " << keptevent << " were ACCEPTED in both truth and smeared tree," << endl;
+  cout << " ---  " << lostevent << " were LOST due to cuts," << endl;
+  cout << " ---  " << rejectevent << " were REJECTED at truth level, and " << endl;
+  cout << " ---  " << fakeevent << " were recovered as FAKEs, i.e. they passed the cuts only after smearing." << endl;
 
   new TCanvas;
   gPad->SetLogy();

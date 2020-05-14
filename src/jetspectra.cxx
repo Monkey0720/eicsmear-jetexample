@@ -223,6 +223,9 @@ int main(int argc, char* argv[]){
 	// because the other one has a better resolution.
 	// In this example, we use both.
 
+	// Note: In this case, P and E are smeared independently, so in general
+	// the mass-energy relation is not conserved. FastJet does not mind at all.
+
 	/* nothing to do */
       }
 
